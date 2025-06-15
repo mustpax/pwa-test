@@ -1,3 +1,5 @@
+import { env } from "./env.js";
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
@@ -15,3 +17,26 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const showMeButton = document.getElementById("show-me");
+
+  showMeButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    // Get random card from deck
+    const randomCard =
+      env.deckFiles[Math.floor(Math.random() * env.deckFiles.length)];
+    // Create and show image
+    const img = document.createElement("img");
+    img.src = `/deck/${randomCard}`;
+    img.alt = "Random card";
+
+    // Create new card section
+    const newCard = document.createElement("section");
+    newCard.className = "card";
+    newCard.appendChild(img);
+
+    // Append to main
+    document.querySelector("main").appendChild(newCard);
+  });
+});
