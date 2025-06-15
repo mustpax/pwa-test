@@ -27,11 +27,23 @@ else
     COMMIT_HASH=$(git rev-parse HEAD)
 fi
 
-# Create or update env.js with the commit hash
+# Get list of files in public/deck directory
+if [ -d "public/deck" ]; then
+    # Create array of deck files
+    DECK_FILES=($(ls -1 public/deck))
+    # Convert array to JSON array string
+    DECK_FILES_JSON=$(printf '"%s",' "${DECK_FILES[@]}" | sed 's/,$//')
+else
+    DECK_FILES_JSON=""
+fi
+
+# Create or update env.js with the commit hash and deck files
 cat > public/env.js << EOF
 export const env = {
   commitHash: "${COMMIT_HASH}",
+  deckFiles: [${DECK_FILES_JSON}],
 };
 EOF
 
 echo "Updated env.js with commit hash: ${COMMIT_HASH}"
+echo "Added deck files: ${DECK_FILES_JSON}"
