@@ -7,21 +7,25 @@ if [ ! -d "public" ]; then
     exit 1
 fi
 
-# Check if git is available
-if ! command -v git &> /dev/null; then
-    echo "Error: git is not installed"
-    exit 1
+# Get commit hash from VERCEL_GIT_COMMIT_SHA if available, otherwise use git
+if [ -n "${VERCEL_GIT_COMMIT_SHA:-}" ]; then
+    COMMIT_HASH="${VERCEL_GIT_COMMIT_SHA}"
+else
+    # Check if git is available
+    if ! command -v git &> /dev/null; then
+        echo "Error: git is not installed"
+        exit 1
+    fi
+
+    # Check if we're in a git repository
+    if ! git rev-parse --is-inside-work-tree &> /dev/null; then
+        echo "Error: Not in a git repository"
+        exit 1
+    fi
+
+    # Get the current git commit hash
+    COMMIT_HASH=$(git rev-parse HEAD)
 fi
-
-# Check if we're in a git repository
-if ! git rev-parse --is-inside-work-tree &> /dev/null; then
-    echo "Error: Not in a git repository"
-    exit 1
-fi
-
-
-# Get the current git commit hash
-COMMIT_HASH=$(git rev-parse HEAD)
 
 # Create or update env.js with the commit hash
 cat > public/env.js << EOF
