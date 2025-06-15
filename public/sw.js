@@ -5,7 +5,15 @@ if (!env.commitHash) {
 }
 
 const CACHE_NAME = `mobile-site-${env.commitHash}`;
-const urlsToCache = ["/", "env.js", "/index.html", "/main.js", "/favicon.svg"];
+const deckFiles = (env.deckFiles || []).map((file) => `/deck/${file}`);
+const urlsToCache = [
+  "/",
+  "env.js",
+  "/index.html",
+  "/main.js",
+  "/favicon.svg",
+  ...deckFiles,
+];
 console.log("sw", { env });
 
 self.addEventListener("install", (event) => {

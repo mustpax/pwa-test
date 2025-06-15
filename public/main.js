@@ -1,7 +1,3 @@
-import { env } from "./env.js";
-
-console.log("main", { env });
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
