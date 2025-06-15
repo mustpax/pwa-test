@@ -6,7 +6,7 @@ if (!env.commitHash) {
 
 const CACHE_NAME = `mobile-site-${env.commitHash}`;
 const urlsToCache = ["/", "env.js", "/index.html", "/main.js", "/favicon.svg"];
-console.log("sw", { env, CACHE_NAME, urlsToCache });
+console.log("sw", { env });
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
