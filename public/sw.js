@@ -1,5 +1,12 @@
-const CACHE_NAME = "mobile-site-v1";
-const urlsToCache = ["/", "/index.html", "/main.js", "/favicon.svg"];
+import { env } from "./env.js";
+
+if (!env.commitHash) {
+  throw new Error("env.commitHash is required");
+}
+
+const CACHE_NAME = `mobile-site-${env.commitHash}`;
+const urlsToCache = ["/", "env.js", "/index.html", "/main.js", "/favicon.svg"];
+console.log("sw", { env, CACHE_NAME, urlsToCache });
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -12,12 +19,8 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      // Cache hit - return response
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).then((response) => {
+    fetch(event.request)
+      .then((response) => {
         // Check if we received a valid response
         if (!response || response.status !== 200 || response.type !== "basic") {
           return response;
@@ -31,8 +34,11 @@ self.addEventListener("fetch", (event) => {
         });
 
         return response;
-      });
-    })
+      })
+      .catch(() => {
+        // Network request failed, try to get from cache
+        return caches.match(event.request);
+      })
   );
 });
 
