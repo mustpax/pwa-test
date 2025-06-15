@@ -1,11 +1,5 @@
 const CACHE_NAME = "mobile-site-v1";
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/main.js",
-  "/favicon.svg",
-  "/styles.css",
-];
+const urlsToCache = ["/", "/index.html", "/main.js", "/favicon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
